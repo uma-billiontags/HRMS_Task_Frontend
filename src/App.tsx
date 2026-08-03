@@ -20,14 +20,9 @@ import Archive_Task_Admin from "./components/admin/tasks/Archive_Task_Admin";
 import Completed_Task_Admin from "./components/admin/tasks/Completed_Task_Admin";
 import Cancel_Task_Admin from "./components/admin/tasks/Cancel_Task_Admin";
 import Active_Task_Employee from "./components/employee/tasks/Active_Task_Employee";
+import Admin_Dashboard from "./components/admin/Admin_Dashboard";
+import Employee_Dashboard from "./components/employee/Employee_Dashboard";
 
-// Placeholder pages — swap these for the real ones as we build them
-function AdminDashboard() {
-  return <h2>Admin Dashboard</h2>;
-}
-function EmployeeDashboard() {
-  return <h2>Employee Dashboard</h2>;
-}
 
 // Shared shell: Sidebar on the left, page content on the right.
 // Every admin page and every employee page renders inside this.
@@ -63,7 +58,7 @@ function App() {
           {/* Admin-only */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route element={<DashboardLayout role="admin" />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/dashboard" element={<Admin_Dashboard />} />
               <Route path="/admin/active_tasks" element={<Active_Task_Admin />} />
               <Route path="/admin/completed_tasks" element={<Completed_Task_Admin />} />
               <Route path="/admin/cancel_tasks" element={<Cancel_Task_Admin />} />
@@ -81,7 +76,7 @@ function App() {
           {/* Employee-only */}
           <Route element={<ProtectedRoute allowedRoles={["employee"]} />}>
             <Route element={<DashboardLayout role="employee" />}>
-              <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+              <Route path="/employee/dashboard" element={<Employee_Dashboard />} />
               <Route path="/employee/active_tasks" element={<Active_Task_Employee />} />
               <Route path="/employee/approved_requests" element={<Approved_Request_Employee />} />
               <Route path="/employee/rejected_requests" element={<Rejected_Request_Employee />} />

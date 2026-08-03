@@ -10,7 +10,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
     ClipboardList,
-    ListChecks,
+    ClipboardCheck,
+    CheckCircle2,
+    // CheckCircle,
+    XCircle,
+    Archive,
+    // Clock,
+    History,
     BarChart3,
     Settings,
     LogOut,
@@ -40,25 +46,25 @@ const ADMIN_NAV: NavGroup[] = [
         section: "TASKS",
         items: [
             { label: "Active Tasks", icon: ClipboardList, to: "/admin/active_tasks" },
-            { label: "Completed Tasks", icon: ListChecks, to: "/admin/completed_tasks" },
-            { label: "Archive Tasks", icon: ListChecks, to: "/admin/archive_tasks" },
-            { label: "Cancel Tasks", icon: ListChecks, to: "/admin/cancel_tasks" },
-            { label: "Review Tasks", icon: ListChecks, to: "/admin/review_tasks" },
+            { label: "Completed Tasks", icon: CheckCircle2, to: "/admin/completed_tasks" },
+            { label: "Archive Tasks", icon: Archive, to: "/admin/archive_tasks" },
+            { label: "Cancel Tasks", icon: XCircle, to: "/admin/cancel_tasks" },
+            { label: "Review Tasks", icon: ClipboardCheck, to: "/admin/review_tasks" },
         ],
     },
-    {
-        section: "REQUESTS",
-        items: [
-            { label: "Pending Requests", icon: ClipboardList, to: "/admin/pending_time_correction_requests" },
-            { label: "Approved Requests", icon: ClipboardList, to: "/admin/approved_requests" },
-            { label: "Rejected Requests", icon: ClipboardList, to: "/admin/rejected_requests" },
-        ],
-    },
+    // {
+    //     section: "REQUESTS",
+    //     items: [
+    //         { label: "Pending Requests", icon: Clock, to: "/admin/pending_time_correction_requests" },
+    //         { label: "Approved Requests", icon: CheckCircle, to: "/admin/approved_requests" },
+    //         { label: "Rejected Requests", icon: XCircle, to: "/admin/rejected_requests" },
+    //     ],
+    // },
     {
         section: "INSIGHTS",
         items: [
             { label: "Reports", icon: BarChart3, to: "/admin/reports" },
-            { label: "Audit History", icon: BarChart3, to: "/admin/audit_history" },
+            { label: "Audit History", icon: History, to: "/admin/audit_history" },
         ],
     },
 ];
@@ -72,18 +78,18 @@ const EMPLOYEE_NAV: NavGroup[] = [
         section: "TASKS",
         items: [{ label: "All Tasks", icon: ClipboardList, to: "/employee/active_tasks" }],
     },
-    {
-        section: "REQUESTS",
-        items: [
-            { label: "Approved Requests", icon: ClipboardList, to: "/employee/approved_requests" },
-            { label: "Rejected Requests", icon: ClipboardList, to: "/employee/rejected_requests" },
-        ],
-    },
+    // {
+    //     section: "REQUESTS",
+    //     items: [
+    //         { label: "Approved Requests", icon: CheckCircle, to: "/employee/approved_requests" },
+    //         { label: "Rejected Requests", icon: XCircle, to: "/employee/rejected_requests" },
+    //     ],
+    // },
     {
         section: "INSIGHTS",
         items: [
             { label: "Reports", icon: BarChart3, to: "/employee/reports" },
-            { label: "Audit History", icon: BarChart3, to: "/employee/audit_history" },
+            { label: "Audit History", icon: History, to: "/employee/audit_history" },
         ],
     },
 ];

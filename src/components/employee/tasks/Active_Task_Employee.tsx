@@ -7,7 +7,7 @@
 // employee's own id, fetched once from /api/auth/me/.
 
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Button, Input, Modal, Form, Tooltip, Select, DatePicker, message, Tag } from "antd";
+import { Table, Button, Input, Modal, Form, Tooltip, Select, message, Tag } from "antd";
 import {
     SearchOutlined, ReloadOutlined, PlayCircleOutlined, PauseCircleOutlined,
     CheckCircleOutlined, LinkOutlined, UserOutlined,
@@ -58,13 +58,13 @@ interface MyTask {
     has_active_session: boolean;
 }
 
-interface SessionRow {
-    id: number;
-    start_time: string;
-    end_time: string | null;
-    duration_seconds: number | null;
-    is_rework_session: boolean;
-}
+// interface SessionRow {
+//     id: number;
+//     start_time: string;
+//     end_time: string | null;
+//     duration_seconds: number | null;
+//     is_rework_session: boolean;
+// }
 
 const STATUS_META: Record<TaskStatus, { label: string; color: string; bg: string }> = {
     not_started: { label: "Not Started", color: "var(--text-secondary)", bg: "var(--bg-input)" },
@@ -150,12 +150,12 @@ export default function Active_Task_Employee() {
     const [submitting, setSubmitting] = useState(false);
     const [submitForm] = Form.useForm();
 
-    const [correctionOpen, setCorrectionOpen] = useState(false);
-    const [correctionTarget, setCorrectionTarget] = useState<MyTask | null>(null);
-    const [correctionSessions, setCorrectionSessions] = useState<SessionRow[]>([]);
-    const [loadingSessions, setLoadingSessions] = useState(false);
-    const [submittingCorrection, setSubmittingCorrection] = useState(false);
-    const [correctionForm] = Form.useForm();
+    // const [correctionOpen, setCorrectionOpen] = useState(false);
+    // // const [correctionTarget, setCorrectionTarget] = useState<MyTask | null>(null);
+    // // const [correctionSessions, setCorrectionSessions] = useState<SessionRow[]>([]);
+    // // const [loadingSessions, setLoadingSessions] = useState(false);
+    // const [submittingCorrection, setSubmittingCorrection] = useState(false);
+    // const [correctionForm] = Form.useForm();
 
     const fetchMe = useCallback(() => {
         setMyIdLoading(true);
@@ -362,64 +362,64 @@ export default function Active_Task_Employee() {
         return <span style={{ fontSize: 11, color: "var(--text-muted)" }}>No action</span>;
     }
 
-    const openCorrection = async (task: MyTask) => {
-        if (!isMine(task)) return; // guard — button is disabled for others anyway
-        setCorrectionTarget(task);
-        setCorrectionOpen(true);
-        setLoadingSessions(true);
-        correctionForm.resetFields();
-        try {
-            const res = await fetch(`${BASE_URL}/api/tasks/${task.id}/sessions/`, {
-                headers: { ...authHeaders() },
-            });
-            const data = await res.json();
-            // Only closed sessions can be corrected — an open one isn't "wrong" yet.
-            setCorrectionSessions((Array.isArray(data) ? data : []).filter((s: SessionRow) => s.end_time));
-        } catch {
-            message.error("Failed to load session history");
-            setCorrectionSessions([]);
-        } finally {
-            setLoadingSessions(false);
-        }
-    };
+    // const openCorrection = async (task: MyTask) => {
+    //     if (!isMine(task)) return; // guard — button is disabled for others anyway
+    //     setCorrectionTarget(task);
+    //     setCorrectionOpen(true);
+    //     setLoadingSessions(true);
+    //     correctionForm.resetFields();
+    //     try {
+    //         const res = await fetch(`${BASE_URL}/api/tasks/${task.id}/sessions/`, {
+    //             headers: { ...authHeaders() },
+    //         });
+    //         const data = await res.json();
+    //         // Only closed sessions can be corrected — an open one isn't "wrong" yet.
+    //         setCorrectionSessions((Array.isArray(data) ? data : []).filter((s: SessionRow) => s.end_time));
+    //     } catch {
+    //         message.error("Failed to load session history");
+    //         setCorrectionSessions([]);
+    //     } finally {
+    //         setLoadingSessions(false);
+    //     }
+    // };
 
-    const handleCorrectionSubmit = async () => {
-        let values;
-        try {
-            values = await correctionForm.validateFields();
-        } catch {
-            return;
-        }
+    // const handleCorrectionSubmit = async () => {
+    //     let values;
+    //     try {
+    //         values = await correctionForm.validateFields();
+    //     } catch {
+    //         return;
+    //     }
 
-        setSubmittingCorrection(true);
-        try {
-            const res = await fetch(`${BASE_URL}/api/tasks/sessions/${values.session_id}/correction-request/`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", ...authHeaders() },
-                body: JSON.stringify({
-                    reason: values.reason,
-                    requested_end_time: values.requested_end_time.toISOString(),
-                }),
-            });
-            if (res.ok) {
-                message.success("Correction request sent for admin review");
-                setCorrectionOpen(false);
-            } else {
-                const err = await res.json().catch(() => ({}));
-                message.error(err.detail || "Failed to submit correction request");
-            }
-        } catch {
-            message.error("Network error");
-        } finally {
-            setSubmittingCorrection(false);
-        }
-    };
+    //     setSubmittingCorrection(true);
+    //     try {
+    //         const res = await fetch(`${BASE_URL}/api/tasks/sessions/${values.session_id}/correction-request/`, {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json", ...authHeaders() },
+    //             body: JSON.stringify({
+    //                 reason: values.reason,
+    //                 requested_end_time: values.requested_end_time.toISOString(),
+    //             }),
+    //         });
+    //         if (res.ok) {
+    //             message.success("Correction request sent for admin review");
+    //             setCorrectionOpen(false);
+    //         } else {
+    //             const err = await res.json().catch(() => ({}));
+    //             message.error(err.detail || "Failed to submit correction request");
+    //         }
+    //     } catch {
+    //         message.error("Network error");
+    //     } finally {
+    //         setSubmittingCorrection(false);
+    //     }
+    // };
 
     // ── Full Excel-style column set ──────────────────────────────────────────
     const columns: ColumnsType<MyTask> = [
         {
             title: "Task ID", dataIndex: "task_id", key: "task_id", width: 95, fixed: "left",
-            render: (v: string) => <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--blue)", background: "var(--blue-bg)",border: "1px solid var(--blue)", padding: "2px 10px", borderRadius: 6, whiteSpace: "nowrap",  }}>{v}</span>,
+            render: (v: string) => <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--blue)", background: "var(--blue-bg)", border: "1px solid var(--blue)", padding: "2px 10px", borderRadius: 6, whiteSpace: "nowrap", }}>{v}</span>,
         },
         {
             title: "Task Name", dataIndex: "task_name", key: "task_name", width: 180, fixed: "left",
@@ -537,19 +537,19 @@ export default function Active_Task_Employee() {
             title: "Rework Count", dataIndex: "rework_count", key: "rework_count", width: 95,
             render: (v: number) => <span className="td-num" style={{ fontSize: 12 }}>{v}</span>,
         },
-        {
-            title: "Time Correction", key: "correction", width: 130,
-            render: (_: any, record: MyTask) => (
-                <Button
-                    size="small"
-                    onClick={() => openCorrection(record)}
-                    disabled={!isMine(record) || record.total_time_taken === 0}
-                    style={{ fontSize: 11, fontWeight: 600, borderRadius: 6 }}
-                >
-                    Request Fix
-                </Button>
-            ),
-        },
+        // {
+        //     title: "Time Correction", key: "correction", width: 130,
+        //     render: (_: any, record: MyTask) => (
+        //         <Button
+        //             size="small"
+        //             onClick={() => openCorrection(record)}
+        //             disabled={!isMine(record) || record.total_time_taken === 0}
+        //             style={{ fontSize: 11, fontWeight: 600, borderRadius: 6 }}
+        //         >
+        //             Request Fix
+        //         </Button>
+        //     ),
+        // },
         {
             title: "Actions", key: "actions", width: 190, fixed: "right",
             render: (_: any, record: MyTask) => <TimerActions task={record} />,
@@ -676,7 +676,7 @@ export default function Active_Task_Employee() {
                 )}
             </Modal>
 
-            <Modal
+            {/* <Modal
                 open={correctionOpen}
                 onCancel={() => setCorrectionOpen(false)}
                 onOk={handleCorrectionSubmit}
@@ -719,7 +719,7 @@ export default function Active_Task_Employee() {
                         </Form.Item>
                     </Form>
                 )}
-            </Modal>
+            </Modal> */}
         </div>
     );
 }
