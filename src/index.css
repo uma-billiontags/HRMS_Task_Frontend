@@ -43,7 +43,8 @@ body {
   --bg-header: #FFFFFF;
   --bg-input: #F3F4F6;
   /* --bg-active: #3A3A3A; */
-  --bg-active: #16284F; /* New */
+  --bg-active: #16284F;
+  /* New */
   --bg-chart-area: #FFFFFF;
 
   /* Flat metric-card background (screenshot style — light gray, no border) */
@@ -342,11 +343,11 @@ body {
 }
 
 /* Sidebar footer links (Settings / Sign out) — override inline text-muted default */
-.db-sidebar-footer a > div {
+.db-sidebar-footer a>div {
   color: var(--sb-text-dim) !important;
 }
 
-.db-sidebar-footer a > div:hover {
+.db-sidebar-footer a>div:hover {
   color: var(--sb-text-bright) !important;
   background: var(--sb-hover-bg);
 }

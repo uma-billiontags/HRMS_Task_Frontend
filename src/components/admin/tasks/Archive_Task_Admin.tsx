@@ -1,14 +1,6 @@
-// Archive.tsx
-// Admin-only — lists every task with task_status === "archived". Read-only:
-// no timer actions, no assign/hold/cancel here, since these tasks are done
-// with. Reuses the same fetch pattern as Task_Display.tsx but calls
-// get_all_tasks with include_archived=true and filters client-side to just
-// the archived ones (keeps this page independent of whatever the main
-// Task_Display list currently shows).
-
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Button, Input, message } from "antd";
-import { SearchOutlined, ReloadOutlined, InboxOutlined } from "@ant-design/icons";
+import { Table, Button, Input, message, Popconfirm } from "antd";
+import { SearchOutlined, ReloadOutlined, InboxOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 
@@ -114,6 +106,28 @@ export default function Archive_Task_Admin() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
+    const [busyId, setBusyId] = useState<number | null>(null);
+
+    async function handleDelete(task: ArchivedTask) {
+        setBusyId(task.id);
+        try {
+            const res = await fetch(`${BASE_URL}/api/tasks/${task.id}/delete/`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json", ...authHeaders() },
+            });
+            if (res.ok) {
+                message.success(`${task.task_id} deleted`);
+                setTasks((prev) => prev.filter((t) => t.id !== task.id));
+            } else {
+                const err = await res.json().catch(() => ({}));
+                message.error(err.detail || "Failed to delete task");
+            }
+        } catch {
+            message.error("Network error");
+        } finally {
+            setBusyId(null);
+        }
+    }
     const fetchArchived = useCallback(() => {
         setLoading(true);
         // include_archived=true bypasses the default exclude() in get_all_tasks —
@@ -264,6 +278,25 @@ export default function Archive_Task_Admin() {
                 </span>
             ),
         },
+        {
+            title: "Actions",
+            key: "actions",
+            width: 100,
+            fixed: "right",
+            render: (_: any, record: ArchivedTask) => (
+                <Popconfirm
+                    title="Delete this task?"
+                    description="This permanently removes the task and its history. This can't be undone."
+                    okText="Delete"
+                    okButtonProps={{ danger: true }}
+                    onConfirm={() => handleDelete(record)}
+                >
+                    <Button size="small" danger loading={busyId === record.id} icon={<DeleteOutlined />} style={{ fontSize: 11, fontWeight: 600, paddingInline: 10, color: "var(--red)", borderColor: "var(--red)", background: "var(--red-bg)", borderRadius: 6, border: "1px solid var(--red)" }}>
+                        Delete
+                    </Button>
+                </Popconfirm>
+            ),
+        },
     ];
 
     return (
@@ -332,7 +365,7 @@ export default function Archive_Task_Admin() {
                     columns={columns}
                     dataSource={filtered}
                     rowKey="id"
-                    scroll={{ x: 1300 }}
+                    scroll={{ x: 1400 }}
                     loading={loading}
                     pagination={{
                         pageSize: 10,

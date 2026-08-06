@@ -134,10 +134,12 @@ export default function Employee_Dashboard() {
         ])
             .then(([report, session]) => {
                 setData(report);
-                setActiveSession(session ?? null);
+                setActiveSession(session?.active ? session : null);
             })
-            .catch(() => message.error("Failed to load your dashboard"))
-            .finally(() => setLoading(false));
+            .catch((err) => {
+                console.error("Dashboard fetch failed:", err);
+                message.error("Failed to load your dashboard");
+            }).finally(() => setLoading(false));
     }, []);
 
     useEffect(() => {
